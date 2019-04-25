@@ -1,4 +1,4 @@
-import readGameSaving from './gameSaving';
+import readGameSaving from './readGameSaving';
 
 class GameSavingData {
   constructor(data) {
@@ -7,7 +7,6 @@ class GameSavingData {
 
   json() {
     return new Promise((resolve, reject) => {
-      // эмуляция обработки ArrayBuffer
       setTimeout(() => {
         resolve(String.fromCharCode.apply(null, new Uint16Array(this.data)));
       }, 1000);
@@ -17,15 +16,16 @@ class GameSavingData {
 
 export default class GameSavingLoader {
   load() {
-    return new Promise((resolve, reject) => {
-      const data = readGameSaving();
-      data.then((buffer) => {
-        const gameSavingData = new GameSavingData(buffer);
-        const str = gameSavingData.json();
-        return (str);
-      }).then((st) => {
-        resolve(JSON.parse(st));
-      }).catch(() => reject('Что-то пошло не так'));
-    });
+    return async function gameSaving() {
+      try {
+        const data = await readGameSaving();
+        const gameSavingData = new GameSavingData(data);
+        const str = await gameSavingData.json();
+        const result = await JSON.parse(str);
+        return result;
+      } catch (e) {
+        return 'Что-то пошло не так';
+      }
+    };
   }
 }

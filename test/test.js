@@ -1,28 +1,49 @@
 import GameSavingLoader from '../src/js/main';
-import readGameSaving from '../src/пameSaving';
+import readGameSaving from '../src/js/readGameSaving';
 
 
-jest.mock('../src/пameSaving.js');
+jest.mock('../src/js/readGameSaving.js');
 
 beforeEach(() => {
   jest.resetAllMocks();
 });
 
-test('Промис возвращается', async () => {
+test('Загрузка промиса', async () => {
+  const data = '{"id":9,"created":1546300800,"userInfo":{"id":1,"name":"Hitman","level":10,"points":2000}}';
+  const buffer = new ArrayBuffer(data.length * 2);
+  const bufferView = new Uint16Array(buffer);
+  for (let i = 0; i < data.length; i++) {
+    bufferView[i] = data.charCodeAt(i);
+  }
+
+  readGameSaving.mockReturnValue(buffer);
+
+  expect.assertions(1);
   const expected = {
-    id: 10,
-    created: 34539853958,
+    id: 9,
+    created: 1546300800,
     userInfo: {
-      id: 1, name: 'Magician', level: 10, points: 2000,
+      id: 1, name: 'Hitman', level: 10, points: 2000,
     },
   };
+  const gameSavingLoader = new GameSavingLoader();
+  const load = gameSavingLoader.load();
+  const reseived = await load();
+  expect(reseived).toEqual(expected);
+});
 
-test('Ошибка', async () => {
-  const expected = {
-    id: 10,
-    created: 34539853958,
-    userInfo: {
-      id: 1, name: 'Magician', level: 10, points: 2000,
-    },
-  };
-
+test('Ошибка промиса', async () => {
+  const data = '{"id":9,created":1546300800,"userInfo":{"id":1,"name":"Hitman","level":10,"points":2000}}';
+  const buffer = new ArrayBuffer(data.length * 2);
+  const bufferView = new Uint16Array(buffer);
+  for (let i = 0; i < data.length; i++) {
+    bufferView[i] = data.charCodeAt(i);
+  }
+  readGameSaving.mockReturnValue(buffer);
+  expect.assertions(1);
+  const expected = 'Ошибка';
+  const gameSavingLoader = new GameSavingLoader();
+  const load = gameSavingLoader.load();
+  const reseived = await load();
+  expect(reseived).toEqual(expected);
+});
