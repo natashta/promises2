@@ -24,7 +24,7 @@ export default class GameSavingLoader {
         const result = await JSON.parse(str);
         return result;
       } catch (e) {
-        return 'Что-то пошло не так';
+        return 'Ошибка';
       }
     };
   }

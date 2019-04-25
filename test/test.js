@@ -28,8 +28,8 @@ test('Загрузка промиса', async () => {
   };
   const gameSavingLoader = new GameSavingLoader();
   const load = gameSavingLoader.load();
-  const reseived = await load();
-  expect(reseived).toEqual(expected);
+  const received = await load();
+  expect(received).toEqual(expected);
 });
 
 test('Ошибка промиса', async () => {
@@ -44,6 +44,6 @@ test('Ошибка промиса', async () => {
   const expected = 'Ошибка';
   const gameSavingLoader = new GameSavingLoader();
   const load = gameSavingLoader.load();
-  const reseived = await load();
-  expect(reseived).toEqual(expected);
+  const received = await load();
+  expect(received).toEqual(expected);
 });
